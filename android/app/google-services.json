@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "899886189758",
+    "project_id": "crop-care-01",
+    "storage_bucket": "crop-care-01.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:899886189758:android:062ad8911b9deed87122ef",
+        "android_client_info": {
+          "package_name": "com.minipjt.crop_capture"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "899886189758-93agiv4a25840hifc3jgsmh9enk8u41n.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD-vOkUWmhLf1ro8wCh422otgAl4yhThJA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "899886189758-93agiv4a25840hifc3jgsmh9enk8u41n.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
