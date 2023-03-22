@@ -6,7 +6,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:tflite/tflite.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
-import 'package:crop_capture/pages/constants.dart';
+import 'package:crop_capture/constants/constants.dart';
 
 class TfliteModel extends StatefulWidget {
   const TfliteModel({Key? key}) : super(key: key);

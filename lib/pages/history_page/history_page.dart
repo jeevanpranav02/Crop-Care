@@ -6,7 +6,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:http/http.dart' as http;
 
 import 'widgets/custom_card.dart';
-import '../constants.dart';
+import 'package:crop_capture/constants/constants.dart';
 
 class HistoryPage extends StatefulWidget {
   const HistoryPage({Key? key}) : super(key: key);

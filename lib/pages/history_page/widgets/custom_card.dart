@@ -1,4 +1,4 @@
-import 'package:crop_capture/pages/constants.dart';
+import 'package:crop_capture/constants/constants.dart';
 import 'package:flutter/material.dart';
 
 class CustomWidget extends StatelessWidget {

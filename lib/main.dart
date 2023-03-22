@@ -4,9 +4,9 @@ import 'firebase_options.dart';
 
 import './pages/history_page/history_page.dart';
 import './pages/tflite_model/tflite_model.dart';
-import './pages/constants.dart';
 import './pages/home_page.dart';
 import './pages/splash_screen/splash_screen.dart';
+import './constants/constants.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

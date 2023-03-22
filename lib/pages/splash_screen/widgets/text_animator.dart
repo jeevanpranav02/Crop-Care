@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:crop_capture/pages/constants.dart';
+import 'package:crop_capture/constants/constants.dart';
 
 class SplashTextAnimation extends StatefulWidget {
   const SplashTextAnimation({Key? key}) : super(key: key);

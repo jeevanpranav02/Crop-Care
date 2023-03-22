@@ -1,8 +1,8 @@
-import 'package:crop_capture/pages/constants.dart';
-import 'package:crop_capture/pages/tflite_model/tflite_model.dart';
-import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 
+import 'package:crop_capture/constants/constants.dart';
+import 'package:crop_capture/pages/tflite_model/tflite_model.dart';
 import 'package:crop_capture/pages/history_page/history_page.dart';
 
 class HomePage extends StatefulWidget {
