@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:crop_capture/pages/splash_screen/widgets/text_animator.dart';
+import 'package:crop_capture/widgets/text_animator.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 
