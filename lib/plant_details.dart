@@ -50,7 +50,7 @@ const PLANT_DETAILS = [
   Plant(
     index: 4,
     name: "Cotton",
-    disease: "Cotton Aphids",
+    disease: "Aphids",
     type: "Biotic disease",
     pathogen: "Pear-shaped Insects",
     symptoms: [
@@ -132,7 +132,7 @@ const PLANT_DETAILS = [
   ),
   Plant(
     index: 9,
-    name: "Grapes",
+    name: "Grape",
     disease: "Black Rot",
     type: "Fungal Disease",
     pathogen: "Guignardia bidwellii",
