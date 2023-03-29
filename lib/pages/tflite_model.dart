@@ -1,15 +1,14 @@
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:tflite/tflite.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 
-import 'package:crop_capture/constants/constants.dart';
+import '../constants/constants.dart';
 
 class TfliteModel extends StatefulWidget {
-  const TfliteModel({Key? key}) : super(key: key);
   static const String routeName = '/tflite-model';
 
   @override
@@ -18,10 +17,10 @@ class TfliteModel extends StatefulWidget {
 
 class _TfliteModelState extends State<TfliteModel> {
   late File _image;
-  late List _results;
   bool imageSelect = false;
   bool isLoading = false;
   late String imageURL;
+  late String label = '';
 
   @override
   void initState() {
@@ -29,12 +28,31 @@ class _TfliteModelState extends State<TfliteModel> {
     loadModel();
   }
 
+  Future pickImage(ImageSource source) async {
+    final ImagePicker picker = ImagePicker();
+    final XFile? pickedFile = await picker.pickImage(
+      source: source,
+    );
+    setState(() {
+      isLoading = true;
+      imageSelect = false;
+    });
+    File image = File(pickedFile!.path);
+    Map<String, String> results = await imageClassification(image);
+    setState(() {
+      label = 'Plant: ${results['plant']}\nDisease: ${results['disease']}';
+      isLoading = false;
+    });
+  }
+
   Future loadModel() async {
     String res;
     res = (await Tflite.loadModel(
-        model: "assets/model/denseNetModel.tflite",
+        model: "assets/model/SequentialModel_v3.tflite",
         labels: "assets/model/labels.txt"))!;
-    print("Models loading status: $res");
+    if (kDebugMode) {
+      print("Models loading status: $res");
+    }
   }
 
   @override
@@ -43,47 +61,46 @@ class _TfliteModelState extends State<TfliteModel> {
     Tflite.close();
   }
 
-  Future<String> saveImage(File imageFile, String label) async {
-    final directory = await getApplicationDocumentsDirectory();
-    final imageName = "${DateTime.now().millisecondsSinceEpoch}_$label.png";
-    final imagePath = '${directory.path}/$imageName';
-    print('Image saved at $imagePath');
-    return imagePath;
+  Future<void> saveImage(File imageFile, List<String> labelParts) async {
+    final imageName =
+        '${labelParts[0]}_${labelParts[1]}____${DateTime.now().millisecondsSinceEpoch}.png';
+    final externalDirectory = await getExternalStorageDirectory();
+    final publicImagePath = '${externalDirectory?.path}/$imageName';
+    await imageFile.copy(publicImagePath);
+    if (kDebugMode) {
+      print('Public image saved at $publicImagePath');
+    }
   }
 
-  Future imageClassification(File image) async {
+  Future<Map<String, String>> imageClassification(File image) async {
     final List? recognitions = await Tflite.runModelOnImage(
       path: image.path,
-      numResults: 4,
+      numResults: 15,
       threshold: 0.1,
-      imageStd: 1,
+      imageMean: 0.0,
+      imageStd: 255.0,
     );
 
-    // Saving the image captured with label as name to store it in DB
     final String label = recognitions![0]['label'];
-    final String imagePath = await saveImage(image, label);
-
-    Reference referenceRoot = FirebaseStorage.instance.ref();
-    Reference referenceDirImages = referenceRoot.child('images');
-
-    // Create a reference for the image to be stored
-    Reference referenceImageToUpload = referenceDirImages
-        .child('${DateTime.now().millisecondsSinceEpoch}_$label.png');
-
-    // Now upload the file in storage.
-    try {
-      await referenceImageToUpload.putFile(image);
-      imageURL = await referenceImageToUpload.getDownloadURL();
-    } on Exception catch (e) {
-      e.toString();
+    final List<String> labelParts = label.split(" ");
+    final String plant = labelParts[0];
+    String disease = "no disease";
+    if (labelParts.length > 1) {
+      disease = labelParts[1];
+    }
+    if (kDebugMode) {
+      print('Plant: $plant, Disease: $disease');
     }
 
+    await saveImage(image, labelParts);
+
     setState(() {
-      _results = recognitions;
-      _image = File(imagePath);
+      _image = image;
       imageSelect = true;
       isLoading = false;
     });
+
+    return {'plant': plant, 'disease': disease};
   }
 
   Widget customButton(String textOnButton, ImageSource source) {
@@ -94,7 +111,7 @@ class _TfliteModelState extends State<TfliteModel> {
             borderRadius: BorderRadius.circular(18.0),
           ),
         ),
-        backgroundColor: MaterialStateProperty.all<Color>(secondaryColor),
+        backgroundColor: MaterialStateProperty.all<Color>(primaryColor),
         padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
           const EdgeInsets.symmetric(vertical: 16.0, horizontal: 40.0),
         ),
@@ -116,11 +133,12 @@ class _TfliteModelState extends State<TfliteModel> {
   }
 
   @override
+  @override
   Widget build(BuildContext context) {
     final double height = MediaQuery.of(context).size.height;
     final double width = MediaQuery.of(context).size.width;
     return Scaffold(
-      backgroundColor: primaryColor,
+      backgroundColor: onPrimaryColor,
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -131,11 +149,12 @@ class _TfliteModelState extends State<TfliteModel> {
             (imageSelect)
                 ? Container(
                     margin: const EdgeInsets.all(10),
-                    constraints: BoxConstraints(
-                      maxWidth: height * 0.4,
-                      maxHeight: width * 0.9,
+                    child: Image.file(
+                      _image,
+                      fit: BoxFit.cover,
+                      width: height * 0.4,
+                      height: width * 0.9,
                     ),
-                    child: Image.file(_image),
                   )
                 : Container(
                     margin: const EdgeInsets.all(10),
@@ -147,26 +166,15 @@ class _TfliteModelState extends State<TfliteModel> {
                     ),
                   ),
             const SizedBox(height: 10),
-            SingleChildScrollView(
-              child: Column(
-                children: (imageSelect)
-                    ? _results.map((result) {
-                        return Card(
-                          child: Container(
-                            margin: const EdgeInsets.all(10),
-                            child: Text(
-                              "${result['label']}",
-                              style: const TextStyle(
-                                color: textColor2,
-                                fontSize: 20,
-                              ),
-                            ),
-                          ),
-                        );
-                      }).toList()
-                    : [if (isLoading) const CircularProgressIndicator()],
+            Text(
+              label,
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                color: textColor2,
+                fontSize: 20,
               ),
             ),
+            const SizedBox(height: 10),
             customButton("Pick Image from Gallery", ImageSource.gallery),
             const SizedBox(height: 10),
             customButton("Pick Image from Camera", ImageSource.camera),
@@ -174,18 +182,5 @@ class _TfliteModelState extends State<TfliteModel> {
         ),
       ),
     );
-  }
-
-  Future pickImage(ImageSource source) async {
-    final ImagePicker picker = ImagePicker();
-    final XFile? pickedFile = await picker.pickImage(
-      source: source,
-    );
-    setState(() {
-      isLoading = true;
-      imageSelect = false;
-    });
-    File image = File(pickedFile!.path);
-    imageClassification(image);
   }
 }
