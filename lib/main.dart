@@ -1,21 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'firebase_options.dart';
 
-import './pages/history_page/history_page.dart';
-import './pages/tflite_model/tflite_model.dart';
+import './pages/history_page.dart';
+import './pages/plant_details_screen.dart';
+import './pages/tflite_model.dart';
 import './pages/home_page.dart';
-import './pages/splash_screen/splash_screen.dart';
+import './pages/splash_screen.dart';
 import './constants/constants.dart';
+import './pages/profile_screen.dart';
 
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.android,
-  );
-
-  runApp(const MyApp());
-}
+void main() => runApp(const MyApp());
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
@@ -25,16 +18,17 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Crop Care',
       theme: ThemeData(
+        primaryColor: primaryColor,
+        primarySwatch: primaryColorSwatch,
         useMaterial3: true,
-        appBarTheme: const AppBarTheme(
-          backgroundColor: primaryColor,
-        ),
       ),
       routes: {
         '/': (context) => const SplashScreen(),
         HomePage.routeName: (context) => const HomePage(),
-        TfliteModel.routeName: (context) => const TfliteModel(),
+        TfliteModel.routeName: (context) => TfliteModel(),
         HistoryPage.routeName: (context) => const HistoryPage(),
+        PlantDetailsScreen.routeName: (context) => PlantDetailsScreen(),
+        ProfilePage.routeName: (context) => ProfilePage(),
       },
       debugShowCheckedModeBanner: false,
     );
