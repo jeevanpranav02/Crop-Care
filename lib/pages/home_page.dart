@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:curved_navigation_bar/curved_navigation_bar.dart';
+import 'package:permission_handler/permission_handler.dart';
 
-import 'package:crop_capture/constants/constants.dart';
-import 'package:crop_capture/pages/tflite_model/tflite_model.dart';
-import 'package:crop_capture/pages/history_page/history_page.dart';
+import '../constants/constants.dart';
+import './tflite_model.dart';
+import './history_page.dart';
+import './profile_screen.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -14,51 +15,52 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  @override
+  void initState() {
+    super.initState();
+    requestStoragePermission();
+  }
+
+  Future<void> requestStoragePermission() async {
+    final PermissionStatus status = await Permission.storage.request();
+    if (status != PermissionStatus.granted) {
+      throw Exception('Permission denied');
+    }
+  }
+
   int _selectedIndex = 1;
-
-  // ignore: non_constant_identifier_names
-  List<Widget> widget_list = [
+  final List<Widget> _pages = [
     const HistoryPage(),
-    const TfliteModel(),
-    const Text("Page 3")
+    TfliteModel(),
+    ProfilePage(),
   ];
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Crop Care'),
       ),
-      backgroundColor: primaryColor,
-      body: _selectedIndex != 1
-          ? Center(
-              child: widget_list[_selectedIndex],
-            )
-          : widget_list[_selectedIndex],
-      bottomNavigationBar: CurvedNavigationBar(
+      backgroundColor: onPrimaryColor,
+      body: _pages[_selectedIndex],
+      bottomNavigationBar: NavigationBar(
         backgroundColor: primaryColor,
-        buttonBackgroundColor: secondaryColor,
-        color: Theme.of(context).primaryColor,
-        animationDuration: const Duration(milliseconds: 300),
-        items: const [
-          Icon(
-            Icons.home,
-            size: 30,
-            color: primaryColor,
+        destinations: const [
+          NavigationDestination(
+            icon: Icon(Icons.home),
+            label: 'Home',
           ),
-          Icon(
-            Icons.camera_alt,
-            size: 30,
-            color: primaryColor,
+          NavigationDestination(
+            icon: Icon(Icons.camera_alt),
+            label: 'Camera',
           ),
-          Icon(
-            Icons.person,
-            size: 30,
-            color: primaryColor,
+          NavigationDestination(
+            icon: Icon(Icons.person),
+            label: 'Profile',
           ),
         ],
-        index: _selectedIndex,
-        onTap: (index) {
+        animationDuration: const Duration(milliseconds: 300),
+        selectedIndex: _selectedIndex,
+        onDestinationSelected: (index) {
           setState(() {
             _selectedIndex = index;
           });
