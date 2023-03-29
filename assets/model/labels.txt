@@ -1,4 +1,15 @@
-Rice__BrownSpot
-Rice__Healthy
-Rice__Hispa
-Rice__LeafBlast
+
+Corn Cercospora_Leaf_Spot 
+Corn Northern_Leaf_Blight
+Corn Healthy
+Cotton Aphids
+Cotton Army_Worm
+Cotton Bacterial_Blight
+Cotton Healthy
+Cotton Powdery_Mildew
+Grape Black_Rot
+Grape Leaf_Blight
+Grape Healthy
+Potato Early_Blight
+Potato Late_Blight
+Potato Healthy
