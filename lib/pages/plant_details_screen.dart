@@ -147,6 +147,7 @@ class PlantDetailsScreen extends StatelessWidget {
                     ],
                   ),
                 ),
+                const SizedBox(height: 300.0),
               ],
             ),
           ),
