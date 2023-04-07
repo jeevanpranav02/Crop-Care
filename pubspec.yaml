@@ -36,3 +36,5 @@ flutter:
     - assets/images/Empty_place_Holder.png
     - assets/images/profile.png
     - assets/icons/leaf_icon.json
+    - assets/icons/happy_plant.json
+    - assets/icons/no_images.json
