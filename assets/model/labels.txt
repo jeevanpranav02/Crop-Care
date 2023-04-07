@@ -1,15 +1,15 @@
 
 Corn Cercospora_Leaf_Spot 
-Corn Northern_Leaf_Blight
 Corn Healthy
+Corn Northern_Leaf_Blight
 Cotton Aphids
 Cotton Army_Worm
 Cotton Bacterial_Blight
 Cotton Healthy
 Cotton Powdery_Mildew
 Grape Black_Rot
-Grape Leaf_Blight
 Grape Healthy
+Grape Leaf_Blight
 Potato Early_Blight
-Potato Late_Blight
 Potato Healthy
+Potato Late_Blight
