@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 import '../plant_details.dart';
 
 class PlantDetailsScreen extends StatelessWidget {
@@ -16,7 +17,7 @@ class PlantDetailsScreen extends StatelessWidget {
       return plant.name == name && plant.disease == disease;
     }).toList();
     final plantDetails =
-        plantDetailsList.isNotEmpty ? plantDetailsList[0] : null;
+        plantDetailsList.isNotEmpty ? plantDetailsList.first : null;
 
     return Scaffold(
       body: CustomScrollView(
@@ -26,7 +27,8 @@ class PlantDetailsScreen extends StatelessWidget {
             pinned: true,
             flexibleSpace: FlexibleSpaceBar(
               title: Text(
-                plantDetails != null ? plantDetails.disease : 'Healthy Plant',
+                plantDetails != null ? plantDetails.disease : name,
+                textAlign: TextAlign.start,
               ),
               background: SizedBox(
                 height: MediaQuery.of(context).size.height * 0.3,
@@ -45,29 +47,47 @@ class PlantDetailsScreen extends StatelessWidget {
               [
                 Padding(
                   padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        plantDetails != null
-                            ? plantDetails.name
-                            : 'Healthy Plant',
-                        style: const TextStyle(
-                          fontSize: 24.0,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      const SizedBox(height: 8.0),
-                      Text(
-                        plantDetails != null ? plantDetails.type : '',
-                        style: const TextStyle(
-                          fontSize: 16.0,
-                          fontStyle: FontStyle.italic,
-                        ),
-                      ),
-                      const SizedBox(height: 8.0),
-                      plantDetails != null
-                          ? Column(
+                  child: plantDetails == null
+                      ? Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Lottie.asset(
+                              'assets/icons/happy_plant.json',
+                              height: 250.0,
+                              width: 250.0,
+                              fit: BoxFit.cover,
+                              repeat: false,
+                            ),
+                            const SizedBox(height: 16.0),
+                            const Text(
+                              'Your plant is healthy!',
+                              style: TextStyle(
+                                fontSize: 24.0,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        )
+                      : Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              plantDetails.name,
+                              style: const TextStyle(
+                                fontSize: 24.0,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const SizedBox(height: 8.0),
+                            Text(
+                              plantDetails.type,
+                              style: const TextStyle(
+                                fontSize: 16.0,
+                                fontStyle: FontStyle.italic,
+                              ),
+                            ),
+                            const SizedBox(height: 8.0),
+                            Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 ...plantDetails.symptoms
@@ -101,20 +121,16 @@ class PlantDetailsScreen extends StatelessWidget {
                                   );
                                 }).toList(),
                               ],
-                            )
-                          : const Text(
-                              'N/A',
                             ),
-                      const SizedBox(height: 16.0),
-                      const Text(
-                        'Remedies:',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      const SizedBox(height: 8.0),
-                      plantDetails != null
-                          ? Column(
+                            const SizedBox(height: 16.0),
+                            const Text(
+                              'Remedies:',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const SizedBox(height: 8.0),
+                            Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 ...plantDetails.remedies.map((remedy) {
@@ -142,10 +158,9 @@ class PlantDetailsScreen extends StatelessWidget {
                                   );
                                 }).toList(),
                               ],
-                            )
-                          : const Text('N/A'),
-                    ],
-                  ),
+                            ),
+                          ],
+                        ),
                 ),
                 const SizedBox(height: 300.0),
               ],
