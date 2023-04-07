@@ -2,10 +2,12 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as pth;
 
 import '../constants/constants.dart';
+import '../plant_details.dart';
 import '../widgets/plant_details_widget.dart';
 
 class HistoryPage extends StatefulWidget {
@@ -51,7 +53,16 @@ class _HistoryPageState extends State<HistoryPage>
     final name = details[0];
     final disease = details.sublist(1, details.length).join(' ');
     if (kDebugMode) {
-      print('Plant : $name\nDisease : $disease');
+      int? index = 0;
+      for (var i = 0; i < PLANT_DETAILS.length; i++) {
+        if (PLANT_DETAILS[i].name == name &&
+            PLANT_DETAILS[i].disease == disease) {
+          index = PLANT_DETAILS[i].index;
+          break;
+        }
+      }
+
+      print('Index : $index \nPlant : $name\nDisease : $disease\n\n');
     }
     return [name, disease];
   }
@@ -89,8 +100,14 @@ class _HistoryPageState extends State<HistoryPage>
                 ),
               ],
             )
-          : const Center(
-              child: Text('Welcome Aboard!'),
+          : Center(
+              child: Lottie.asset(
+                'assets/icons/no_images.json',
+                fit: BoxFit.cover,
+                repeat: false,
+                height: 250.0,
+                width: 250.0,
+              ),
             ),
     );
   }
