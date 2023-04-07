@@ -82,6 +82,7 @@ class _TfliteModelState extends State<TfliteModel> {
     );
 
     final String label = recognitions![0]['label'];
+
     final List<String> labelParts = label.split(" ");
     final String plant = labelParts[0];
     String disease = "no disease";
@@ -132,7 +133,6 @@ class _TfliteModelState extends State<TfliteModel> {
     );
   }
 
-  @override
   @override
   Widget build(BuildContext context) {
     final double height = MediaQuery.of(context).size.height;
